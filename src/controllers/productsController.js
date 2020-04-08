@@ -1,91 +1,82 @@
 'Use Strict';
-const mongoose = require('mongoose');
-const Product = mongoose.model('Product');
 const repository = require('../repositories/product-repository')
 
 // Busca por todos os produtos
-exports.get = (req, res, next) => {
-   repository.get()
-    .then(function(data) {        
-       res.status(200).send(data);
-    }).catch(function(e) {
-        res.status(400).send({ 
-            message: 'Falha ao pesquisar os produtos', data: e 
+ exports.get = async(req, res, next) => {
+    try {        
+        var data = await repository.get();
+        res.status(200).send(data);
+    } catch (e) {
+        res.status(500).send({ 
+            message: 'Falha na sua requisição' 
         });
-    })
+    }
 }
 // Busca um produto pela sua slug
-exports.getBySlug = (req, res, next) => {
-    repository.getSlug(req.params.slug)
-     .then(function(data) {        
+ exports.getBySlug = async(req, res, next) => {
+    try{
+        var data = await repository.getBySlug(req.params.slug);
         res.status(200).send(data);
-     }).catch(function(e) {
-         res.status(400).send({ 
-             message: 'Produto não existe', data: e 
-         });
-     })
+    } catch (e) {
+        res.status(500).send({ 
+            message: 'Falha na sua requisição'
+        });
+    }
  }
  // Busca um produto pelo ID
- exports.getByID = (req, res, next) => {
-    repository.getById(req.params.id)
-     .then(function(data) {        
+ exports.getByID = async(req, res, next) => {
+    
+    try {
+        var data = await repository.getById(req.params.id);
         res.status(200).send(data);
-     }).catch(function(e) {
-         res.status(400).send({ 
-             message: 'Produto não existe', data: e 
-         });
-     })
+    } catch (e) {
+        res.status(500).send({ 
+            message: 'Falha na sua requisição'
+        });
+    }
  }
 // Busca os produtos pelo array de TAGS
- exports.getByTag = (req, res, next) => {
-   repository.getByTag(req.params.tag)
-     .then(function(data) {        
-        res.status(200).send(data);
-     }).catch(function(e) {
-         res.status(400).send({ 
-             message: 'Erro ao pesquisar os produtos', data: e 
-         });
-     })
+ exports.getByTag = async(req, res, next) => {
+   try {
+       var data = await repository.getByTag(req.params.tag);
+       res.status(200).send(data);
+   } catch (e) {
+       res.status(500).send({ 
+            message: 'Falha na sua requisição' 
+       });
+   }
  }
  
- exports.store = (req, res, next) => {
-    repository.create(req.body)
-    .then(function(x) {        
-        res.status(201).send({ 
-            message: 'Produto Cadastrado com sucesso!'
-        });
-    }).catch(function(e) {
+ exports.store = async(req, res, next) => {
+    try {
+        var data = await repository.create(req.body);
+        res.status(201).send({message: 'Produto Cadastrado com sucesso!'})
+    } catch (e) {
         res.status(400).send({ 
-            message: 'Falha ao cadastrar o produto', data: e 
+            message: 'Falha ao cadastrar o produto', data: e  
         });
-    })
-
-    
+    }
 }
 
-exports.put = (req, res, next) => {
-   repository.update(req.params.id, req.body) 
-   .then(function(x) {        
-    res.status(200).send({ 
-            message: 'Produto atualizado com sucesso!'
-        });
-    }).catch(function(e) {
+ exports.put = async(req, res, next) => {
+     
+    try {
+        var data = await repository.update(req.body);
+        res.status(200).send({message: "Produto atualizado com sucesso"})
+    } catch (e) {
         res.status(400).send({ 
             message: 'Falha ao atualizar o produto', data: e 
-        });
-    })
+        }); 
+    }
 }
 
-exports.delete = (req, res, next) => {
-    
-   repository.delete(req.params.id)
-    .then(function(x) {        
-        res.status(200).send({ 
-            message: 'Produto excluído com sucesso!'
-        });
-    }).catch(function(e) {
+ exports.delete = async(req, res, next) => {
+
+    try {
+        var data = await repository.delete(req.params.id);
+    } catch (error) {
         res.status(400).send({ 
             message: 'Falha ao excluír o produto', data: e 
-        });
-    })
+        }); 
+    }
 }
